@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kuis IPA SMP Dampak Perubahan Lingkungan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    input[type="text"] {
+      width: 300px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    #timer {
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Kuis IPA SMP</h2>
+  <h2>By: Torus Manuntun Nababan, M.Pd</h2>
+  <h2>Materi: DAmpak Perubahan Lingkungan</h2>
+  <!-- Form Identitas -->
+  <div id="identityForm">
+    <h3>Silakan isi identitas terlebih dahulu:</h3>
+    <label>Nama:
+      <input type="text" id="nama" required>
+    </label>
+    <label>Kelas:
+      <input type="text" id="kelas" required>
+    </label>
+    <label>Tahun Ajaran:
+      <input type="text" id="tahun" required>
+    </label>
+    <label>Nama Sekolah:
+      <input type="text" id="sekolah" required>
+    </label>
+    <button onclick="startQuiz()">Mulai Kuis</button>
+  </div>
+
+  <!-- Timer -->
+  <div id="timer" class="hidden"></div>
+
+  <!-- Form Soal -->
+  <form id="quizForm" class="hidden">
+    <div id="questionsContainer"></div>
+    <button type="button" onclick="submitQuiz()">Selesai dan Lihat Skor</button>
+  </form>
+
+  <div id="result" class="hidden"></div>
+
+  <script>
+    const questions = [
+      { question: "1. Salah satu penyebab utama pencemaran udara adalah...", options: ["Sampah plastik", "Gas buangan kendaraan bermotor", "Pupuk kompos", "Daun kering"], answer: "Gas buangan kendaraan bermotor" },
+    { question: "2. Pembuangan limbah industri ke sungai dapat menyebabkan...", options: ["Kualitas air meningkat", "Ikan berkembang biak", "Pencemaran air", "Air menjadi lebih segar"], answer: "Pencemaran air" },
+    { question: "3. Efek rumah kaca menyebabkan...", options: ["Hujan deras", "Pemanasan global", "Pelangi", "Bumi menjadi lebih dingin"], answer: "Pemanasan global" },
+    { question: "4. Penebangan hutan secara liar dapat menyebabkan...", options: ["Udara segar", "Banjir dan tanah longsor", "Keseimbangan alam", "Penghijauan"], answer: "Banjir dan tanah longsor" },
+    { question: "5. Sampah anorganik yang tidak mudah terurai adalah...", options: ["Kulit buah", "Daun", "Botol plastik", "Nasi"], answer: "Botol plastik" },
+    { question: "6. Lapisan ozon berfungsi untuk...", options: ["Menahan cahaya tampak", "Mengurangi polusi udara", "Menahan sinar ultraviolet dari matahari", "Menurunkan suhu bumi"], answer: "Menahan sinar ultraviolet dari matahari" },
+    { question: "7. Salah satu cara mengurangi dampak pencemaran lingkungan adalah...", options: ["Menebang pohon", "Membuang sampah ke sungai", "3R (Reduce, Reuse, Recycle)", "Menggunakan kendaraan bermotor sebanyak-banyaknya"], answer: "3R (Reduce, Reuse, Recycle)" },
+    { question: "8. Pemanasan global dapat menyebabkan...", options: ["Kenaikan permukaan laut", "Hujan asam", "Udara menjadi sejuk", "Hutan makin lebat"], answer: "Kenaikan permukaan laut" },
+    { question: "9. Limbah yang berasal dari rumah tangga disebut...", options: ["Limbah industri", "Limbah domestik", "Limbah pertanian", "Limbah organik"], answer: "Limbah domestik" },
+    { question: "10. Penanganan limbah B3 (bahan berbahaya dan beracun) harus dilakukan dengan cara...", options: ["Dibuang ke sungai", "Dibakar terbuka", "Dikelola sesuai prosedur khusus", "Dikubur di kebun"], answer: "Dikelola sesuai prosedur khusus" },
+    { question: "11. Terumbu karang rusak akibat...", options: ["Perikanan ramah lingkungan", "Pemanasan global dan polusi laut", "Penggunaan pupuk alami", "Penanaman pohon mangrove"], answer: "Pemanasan global dan polusi laut" },
+    { question: "12. Polusi suara dapat menyebabkan...", options: ["Banjir", "Kebisingan dan gangguan kesehatan", "Lahan kritis", "Tanah longsor"], answer: "Kebisingan dan gangguan kesehatan" },
+    { question: "13. Perubahan lingkungan secara alami disebabkan oleh...", options: ["Banjir, gunung meletus, gempa", "Penebangan liar", "Pencemaran limbah", "Polusi udara"], answer: "Banjir, gunung meletus, gempa" },
+    { question: "14. Contoh dampak negatif dari pembangunan adalah...", options: ["Lapangan kerja meningkat", "Kesejahteraan meningkat", "Kerusakan lingkungan", "Transportasi lancar"], answer: "Kerusakan lingkungan" },
+    { question: "15. Upaya pelestarian lingkungan hutan dilakukan dengan cara...", options: ["Reboisasi", "Eksploitasi", "Pembakaran hutan", "Pembuangan limbah"], answer: "Reboisasi" },
+    { question: "16. Sampah organik dapat dimanfaatkan menjadi...", options: ["Bahan bangunan", "Baja ringan", "Kompos", "Kaca"], answer: "Kompos" },
+    { question: "17. Pencemaran tanah disebabkan oleh...", options: ["Penanaman pohon", "Sampah plastik dan limbah kimia", "Reboisasi", "Biopori"], answer: "Sampah plastik dan limbah kimia" },
+    { question: "18. Perubahan iklim global ditandai oleh...", options: ["Musim yang teratur", "Cuaca yang stabil", "Perubahan pola hujan dan suhu", "Tidak ada bencana"], answer: "Perubahan pola hujan dan suhu" },
+    { question: "19. Pembangunan berkelanjutan adalah pembangunan yang...", options: ["Tidak memperhatikan lingkungan", "Mengabaikan generasi mendatang", "Memperhatikan keseimbangan lingkungan dan kebutuhan manusia", "Memakai sumber daya sebanyak-banyaknya"], answer: "Memperhatikan keseimbangan lingkungan dan kebutuhan manusia" },
+    { question: "20. Perubahan lingkungan yang terjadi karena aktivitas manusia disebut...", options: ["Perubahan alami", "Bencana alam", "Perubahan buatan", "Perubahan ekosistem"], answer: "Perubahan buatan" }
+  ];
+
+    let quizTimer;
+    let countdownInterval;
+    const timeLimit = 20 * 60 * 1000; // 20 menit
+
+    function startQuiz() {
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      const tahun = document.getElementById('tahun').value;
+      const sekolah = document.getElementById('sekolah').value;
+
+      if (!nama || !kelas || !tahun || !sekolah) {
+        alert("Harap lengkapi semua data identitas.");
+        return;
+      }
+
+      document.getElementById('identityForm').classList.add('hidden');
+      document.getElementById('quizForm').classList.remove('hidden');
+      document.getElementById('timer').classList.remove('hidden');
+
+      const container = document.getElementById('questionsContainer');
+      container.innerHTML = "";
+      questions.forEach((q, index) => {
+        const div = document.createElement('div');
+        div.classList.add('question');
+        div.innerHTML = `<p>${q.question}</p>` + q.options.map(opt => `
+          <label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label><br>`).join('');
+        container.appendChild(div);
+      });
+
+      // Timer otomatis submit setelah 20 menit
+      quizTimer = setTimeout(() => {
+        alert("Waktu habis! Kuis akan otomatis disubmit.");
+        submitQuiz();
+      }, timeLimit);
+
+      // Countdown display
+      let remaining = timeLimit / 1000;
+      const timerDisplay = document.getElementById('timer');
+      timerDisplay.textContent = `Sisa waktu: ${remaining} detik`;
+      countdownInterval = setInterval(() => {
+        remaining--;
+        timerDisplay.textContent = `Sisa waktu: ${remaining} detik`;
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+    }
+
+    function submitQuiz() {
+      clearTimeout(quizTimer);
+      clearInterval(countdownInterval);
+
+      let score = 0;
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        if (selected && selected.value === q.answer) {
+          score += 10;
+        }
+      });
+
+      document.getElementById('quizForm').classList.add('hidden');
+      document.getElementById('timer').classList.add('hidden');
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('hidden');
+
+      const nama = document.getElementById('nama').value;
+      const kelas = document.getElementById('kelas').value;
+      const tahun = document.getElementById('tahun').value;
+      const sekolah = document.getElementById('sekolah').value;
+
+      let message = "";
+      if (score >= 70) {
+        message = "<p style='color: green;'><strong>Selamat!</strong> Anda Sudah Bisa Melanjutkan ke Materi Berikutnya.</p>";
+      } else {
+        message = "<p style='color: red;'><strong>Mohon maaf.</strong> Silakan pelajari kembali materi ini sebelum melanjutkan ke materi berikutnya.</p>";
+      }
+
+      resultDiv.innerHTML = `
+        <h3>Hasil Kuis</h3>
+        <p><strong>Nama:</strong> ${nama}</p>
+        <p><strong>Kelas:</strong> ${kelas}</p>
+        <p><strong>Tahun Ajaran:</strong> ${tahun}</p>
+        <p><strong>Sekolah:</strong> ${sekolah}</p>
+        <p><strong>Skor Anda:</strong> ${score} dari 200</p>
+        ${message}
+      `;
+    }
+  </script>
+</body>
+</html>
