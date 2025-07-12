@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis IPA: Dampak Aktivitas Manusia terhadap Lingkungan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+        }
+        .header-main-title {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h1 {
+            color: #0056b3;
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .author-info {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .author-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .author-info p:first-child {
+            font-weight: bold;
+            color: #333;
+            font-size: 1em;
+        }
+        .header-image {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            z-index: 10;
+        }
+        .left-header-image {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #0056b3;
+            z-index: 10;
+        }
+        h2 {
+            color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .question {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #timer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        #timeLimitDisplay {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 5px;
+            margin-top: 50px;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #e9ecef;
+            display: none;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .cooldown-message {
+            text-align: center;
+            font-size: 1.2em;
+            color: #d9534f;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #d9534f;
+            border-radius: 5px;
+            background-color: #ffe0e0;
+        }
+        @media (max-width: 600px) {
+            .header-image, .left-header-image {
+                position: static;
+                margin: 10px auto;
+                display: block;
+            }
+            .header-main-title, .author-info {
+                text-align: center;
+            }
+            .container {
+                position: static;
+            }
+            #timeLimitDisplay {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-main-title">
+            <h1>Kuis IPA: Dampak Aktivitas Manusia terhadap Lingkungan</h1>
+        </div>
+        <div class="author-info">
+            <p>By. Torus Manuntun Nababan, S.Pd.,M.Pd</p>
+            <p>(Pengembang Soal Kuis)</p>
+        </div>
+        <img src="logo.png" alt="Foto Torus Manuntun Nababan, S.Pd.,M.Pd" class="header-image">
+        <img src="jas.jpg" alt="Ilustrasi Jas" class="left-header-image">
+
+        <p id="timeLimitDisplay">Waktu pengerjaan: <span id="timeLimit">30</span> menit</p>
+        <div id="timer">Waktu tersisa: 30:00</div>
+
+        <form id="quizForm">
+            <h2>Identitas Siswa</h2>
+            <div class="form-group">
+                <label for="sekolah">Nama Sekolah:</label>
+                <input type="text" id="sekolah" name="sekolah" required>
+            </div>
+            <div class="form-group">
+                <label for="nama">Nama Siswa:</label>
+                <input type="text" id="nama" name="nama" required>
+            </div>
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <input type="text" id="kelas" name="kelas" required>
+            </div>
+            <div class="form-group">
+                <label for="semester">Semester:</label>
+                <select id="semester" name="semester" required>
+                    <option value="">Pilih Semester</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tahunAjaran">Tahun Ajaran:</label>
+                <input type="text" id="tahunAjaran" name="tahunAjaran" placeholder="Contoh: 2024/2025" required>
+            </div>
+
+            <hr>
+
+            <h2>Soal Kuis</h2>
+            <div id="questionsContainer">
+                </div>
+
+            <button type="submit">Selesai Kuis</button>
+        </form>
+
+        <div id="results">
+            <h2>Hasil Kuis</h2>
+            <p><strong>Nama Siswa:</strong> <span id="resultNama"></span></p>
+            <p><strong>Skor Anda:</strong> <span id="score"></span></p>
+            <p id="message"></p>
+            <h3>Detail Jawaban:</h3>
+            <div id="answerDetails">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Polusi Air, Udara, dan Tanah (10 soal)
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Pencemaran air sering disebabkan oleh limbah rumah tangga atau pabrik yang dibuang ke...",
+                options: ["Sungai", "Gunung", "Udara", "Hutan"],
+                answer: "Sungai"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Asap kendaraan bermotor dan pabrik dapat menyebabkan polusi...",
+                options: ["Air", "Tanah", "Udara", "Suara"],
+                answer: "Udara"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Polusi tanah terjadi ketika ada zat berbahaya yang masuk ke dalam tanah, seperti...",
+                options: ["Sampah plastik", "Air hujan", "Udara bersih", "Sinar matahari"],
+                answer: "Sampah plastik"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Dampak dari polusi udara dapat menyebabkan masalah kesehatan pada...",
+                options: ["Telinga", "Kulit", "Paru-paru", "Jantung"],
+                answer: "Paru-paru"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Polusi air dapat membahayakan kehidupan ikan dan tumbuhan di sungai atau laut.",
+                options: ["Benar", "Salah", "Hanya membahayakan manusia", "Tidak ada pengaruhnya"],
+                answer: "Benar"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Efek rumah kaca yang menyebabkan pemanasan global disebabkan oleh gas-gas polusi udara.",
+                options: ["Benar", "Salah", "Disebabkan oleh air", "Disebabkan oleh tanah"],
+                answer: "Benar"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Menggunakan kantong belanja yang bisa dipakai berulang kali membantu mengurangi polusi...",
+                options: ["Udara", "Tanah (plastik)", "Air", "Suara"],
+                answer: "Tanah (plastik)"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Menanam pohon di lingkungan sekitar dapat membantu mengurangi polusi udara.",
+                options: ["Benar", "Salah", "Tidak ada hubungannya", "Hanya mengurangi polusi air"],
+                answer: "Benar"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Pencemaran air akibat tumpahan minyak di laut sangat berbahaya bagi...",
+                options: ["Tanah pertanian", "Burung dan biota laut", "Hutan", "Udara"],
+                answer: "Burung dan biota laut"
+            },
+            {
+                topic: "Dampak Manusia: Polusi",
+                question: "Hujan asam disebabkan oleh polusi udara dari industri dan kendaraan.",
+                options: ["Benar", "Salah", "Disebabkan oleh air bersih", "Disebabkan oleh panas"],
+                answer: "Benar"
+            },
+
+            // Sampah Anorganik dan Organik (10 soal)
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Sampah yang berasal dari sisa-sisa makhluk hidup dan bisa membusuk disebut sampah...",
+                options: ["Anorganik", "Beracun", "Organik", "Bahan kimia"],
+                answer: "Organik"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Sampah anorganik adalah sampah yang sulit terurai oleh alam, seperti...",
+                options: ["Daun kering", "Sisa makanan", "Botol plastik", "Ranting pohon"],
+                answer: "Botol plastik"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Contoh sampah organik yang bisa dijadikan kompos adalah...",
+                options: ["Baterai bekas", "Pecahan kaca", "Kulit buah dan sayuran", "Kaleng minuman"],
+                answer: "Kulit buah dan sayuran"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Sampah anorganik seperti plastik membutuhkan waktu sangat lama untuk terurai di tanah.",
+                options: ["Benar", "Salah", "Terurai cepat", "Tidak terurai sama sekali"],
+                answer: "Benar"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Kegiatan 'Reuse' dalam 3R (Reuse, Reduce, Recycle) berarti...",
+                options: ["Mengurangi penggunaan", "Mendaur ulang", "Menggunakan kembali", "Membuang"],
+                answer: "Menggunakan kembali"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Kegiatan 'Reduce' dalam 3R berarti...",
+                options: ["Mengurangi penggunaan", "Mendaur ulang", "Menggunakan kembali", "Membuang"],
+                answer: "Mengurangi penggunaan"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Kegiatan 'Recycle' dalam 3R berarti...",
+                options: ["Mengurangi penggunaan", "Mendaur ulang", "Menggunakan kembali", "Membuang"],
+                answer: "Mendaur ulang"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Kita harus memisahkan sampah organik dan anorganik sebelum membuangnya.",
+                options: ["Benar", "Salah", "Tidak perlu dipisahkan", "Hanya sampah plastik yang dipisah"],
+                answer: "Benar"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Membuang sampah di tempatnya adalah cara paling sederhana untuk menjaga lingkungan.",
+                options: ["Benar", "Salah", "Membuang sampah ke sungai lebih baik", "Sampah bisa dibakar"],
+                answer: "Benar"
+            },
+            {
+                topic: "Dampak Manusia: Sampah",
+                question: "Kompos adalah pupuk alami yang terbuat dari sampah organik.",
+                options: ["Benar", "Salah", "Terbuat dari plastik", "Tidak bisa digunakan sebagai pupuk"],
+                answer: "Benar"
+            }
+        ];
+
+        const timeLimitInMinutes = 30; 
+        let timeLeft = timeLimitInMinutes * 60; // seconds
+        let timerInterval;
+
+        const quizForm = document.getElementById('quizForm');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const timerDisplay = document.getElementById('timer');
+        const resultsDiv = document.getElementById('results');
+        const resultNama = document.getElementById('resultNama');
+        const scoreDisplay = document.getElementById('score');
+        const messageDisplay = document.getElementById('message');
+        const answerDetailsDiv = document.getElementById('answerDetails');
+
+        // Durasi cooldown: 1 jam dalam milidetik
+        const cooldownDuration = 60 * 60 * 1000;
+        const lastQuizCompletionKey = 'lastQuizCompletionTime';
+
+        // Fungsi untuk mengacak array (algoritma Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Fungsi untuk menghasilkan dan menampilkan pertanyaan
+        function generateQuestions() {
+            // Pastikan jumlah soal adalah 20
+            if (questions.length !== 20) {
+                console.error("Jumlah soal tidak sesuai (harus 20).");
+            }
+            
+            shuffleArray(questions);
+            questionsContainer.innerHTML = '';
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const shuffledOptions = [...q.options];
+                shuffleArray(shuffledOptions);
+
+                questionDiv.innerHTML = `
+                    <p>${index + 1}. ${q.question}</p>
+                    <div class="options">
+                        ${shuffledOptions.map((option) => `
+                            <label>
+                                <input type="radio" name="q${index}" value="${option}"> ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `Waktu tersisa: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu habis! Kuis akan otomatis disubmit.");
+                    quizForm.dispatchEvent(new Event('submit'));
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Penanganan saat formulir disubmit
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearInterval(timerInterval);
+
+            let totalScore = 0;
+            const pointsPerCorrect = 5; // 5 poin per soal
+            const maxPossibleScore = questions.length * pointsPerCorrect; // 20 * 5 = 100
+
+            const answers = {};
+
+            questions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                const userAnswer = selectedOption ? selectedOption.value : null;
+                answers[`q${index}`] = userAnswer;
+
+                if (userAnswer === q.answer) {
+                    totalScore += pointsPerCorrect;
+                }
+            });
+
+            // Simpan waktu penyelesaian kuis ke Local Storage
+            localStorage.setItem(lastQuizCompletionKey, Date.now());
+
+            // Tampilkan hasil
+            resultNama.textContent = document.getElementById('nama').value;
+            scoreDisplay.textContent = `${totalScore} / ${maxPossibleScore}`;
+
+            // Tentukan pesan berdasarkan skor
+            // Nilai Pemenang ditentukan oleh skor >= 70
+            if (totalScore >= 70) { 
+                messageDisplay.textContent = "Selamat Anda Pemenang";
+                messageDisplay.style.color = "green";
+            } else {
+                messageDisplay.textContent = "Anda Belum Beruntung, Belajar Lagi Ya";
+                messageDisplay.style.color = "red";
+            }
+
+            // Tampilkan detail jawaban
+            answerDetailsDiv.innerHTML = '';
+            questions.forEach((q, index) => {
+                const userAnswer = answers[`q${index}`];
+                const detailDiv = document.createElement('p');
+                let answerStatusClass = '';
+                let userAnswerText = userAnswer !== null ? userAnswer : 'Tidak dijawab';
+
+                if (userAnswer === q.answer) {
+                    answerStatusClass = 'correct';
+                } else if (userAnswer !== null) {
+                    answerStatusClass = 'incorrect';
+                } else {
+                    answerStatusClass = '';
+                }
+
+                detailDiv.innerHTML = `
+                    <strong>${index + 1}. ${q.question}</strong><br>
+                    Jawaban Anda: <span class="${answerStatusClass}">
+                        ${userAnswerText}
+                    </span><br>
+                    Kunci Jawaban: <span class="correct">${q.answer}</span>
+                `;
+                answerDetailsDiv.appendChild(detailDiv);
+            });
+
+            quizForm.style.display = 'none';
+            resultsDiv.style.display = 'block';
+        });
+
+        // Inisialisasi kuis dan cek cooldown saat halaman dimuat
+        window.onload = function() {
+            const lastCompletionTime = localStorage.getItem(lastQuizCompletionKey);
+            if (lastCompletionTime) {
+                const timeElapsed = Date.now() - parseInt(lastCompletionTime);
+                if (timeElapsed < cooldownDuration) {
+                    const remainingTime = cooldownDuration - timeElapsed;
+                    const minutes = Math.floor(remainingTime / (1000 * 60));
+                    const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                    quizForm.style.display = 'none';
+                    timerDisplay.style.display = 'none';
+                    document.getElementById('timeLimitDisplay').style.display = 'none';
+                    const cooldownMessageDiv = document.createElement('div');
+                    cooldownMessageDiv.classList.add('cooldown-message');
+                    cooldownMessageDiv.innerHTML = `
+                        Anda telah menyelesaikan kuis ini. <br>
+                        Silakan coba lagi dalam **${minutes.toString().padStart(2, '0')} menit dan ${seconds.toString().padStart(2, '0')} detik**.
+                    `;
+                    document.querySelector('.container').insertBefore(cooldownMessageDiv, document.getElementById('quizForm'));
+                    return;
+                }
+            }
+            // Jika tidak ada cooldown atau cooldown sudah berakhir, inisialisasi kuis
+            generateQuestions();
+            startTimer();
+        };
+    </script>
+</body>
+</html>
